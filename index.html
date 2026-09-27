@@ -298,7 +298,7 @@
 
     const correct = selectedRiddle.answer.some(answer => normalize(answer) === guess);
     if (correct) {
-      message.textContent = "🎉 Correct! Nice work.";
+      message.textContent = "🎉 Correct! Nice work. 🎉";
       message.className = "message success";
       correctAnswer.textContent = selectedRiddle.answers[0];
       reveal.style.display = "block";
