@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riddles</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#f6f3ed, #171613);
+    --surface: light-dark(#fffdf8, #211f1b);
+    --surface-2: light-dark(#f0ece3, #2b2823);
+    --text: light-dark(#26231f, #f5f0e7);
+    --muted: light-dark(#706b63, #aaa39a);
+    --border: light-dark(#ddd7cc, #413c35);
+    --accent: light-dark(#6b4eff, #9b88ff);
+    --accent-text: #ffffff;
+    --success: light-dark(#176b43, #62c995);
+    --error: light-dark(#a63b32, #ff8d82);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  #app {
+    min-height: 100vh;
+    background-color: var(--bg);
+    display: grid;
+    place-items: center;
+    padding: 28px 18px;
+    border-radius: 0;
+  }
+  main { width: min(680px, 100%); }
+  .eyebrow {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    font-size: 12px;
+    font-weight: 750;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: clamp(28px, 6vw, 52px);
+    box-shadow: 0 18px 55px color-mix(in srgb, var(--text) 8%, transparent);
+  }
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(38px, 8vw, 64px);
+    line-height: .98;
+    letter-spacing: -.045em;
+    text-align: center;
+    margin: 0 0 14px;
+  }
+  .intro {
+    text-align: center;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 540px;
+    margin: 0 auto 30px;
+  }
+  .riddle-list { display: grid; gap: 10px; }
+  .riddle-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 58px;
+    padding: 15px 18px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface-2);
+    color: var(--text);
+    text-align: left;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .riddle-link:hover { border-color: var(--accent); }
+  .riddle-link span:last-child { color: var(--muted); font-size: 20px; }
+  .riddle {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(22px, 4vw, 31px);
+    line-height: 1.45;
+    text-align: center;
+    margin: 0 auto 34px;
+    max-width: 570px;
+    white-space: pre-line;
+  }
+  .back {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: 0;
+    min-height: auto;
+    margin-bottom: 24px;
+    font-weight: 650;
+  }
+  .back:hover { filter: none; color: var(--text); }
+  .hidden { display: none !important; }
+  .form { display: flex; gap: 10px; }
+  input {
+    min-width: 0;
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--surface-2);
+    color: var(--text);
+    padding: 15px 16px;
+    font-size: 16px;
+    outline: none;
+  }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+  button {
+    border: 0;
+    border-radius: 13px;
+    padding: 0 21px;
+    min-height: 52px;
+    background: var(--accent);
+    color: var(--accent-text);
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.06); }
+  button:active { transform: translateY(1px); }
+  .message {
+    min-height: 28px;
+    text-align: center;
+    margin: 20px 0 0;
+    font-weight: 700;
+  }
+  .message.success { color: var(--success); }
+  .message.error { color: var(--error); }
+  .answer {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--surface-2);
+    text-align: center;
+    display: none;
+  }
+  .answer strong { display: block; margin-top: 4px; font-size: 20px; }
+  .footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 18px; }
+  @media (max-width: 480px) {
+    .form { flex-direction: column; }
+    button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <main>
+    <div class="eyebrow">A little brain teaser</div>
+    <section class="card" aria-live="polite">
+      <div id="homeView">
+        <h1>Riddles</h1>
+        <!-- EDIT THIS DESCRIPTION to explain how your riddles work. -->
+        <p class="intro">Pick a riddle, solve it, and see whether you got the answer right.</p>
+        <div class="riddle-list" id="riddleList"></div>
+      </div>
+      <div id="riddleView" class="hidden">
+        <button class="back" id="backButton" type="button">← All riddles</button>
+        <h1 id="riddleTitle"></h1>
+        <p class="riddle" id="riddle"></p>
+        <form class="form" id="answerForm">
+          <input id="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Your answer..." aria-label="Your answer">
+          <button type="submit">Submit</button>
+        </form>
+        <div class="message" id="message"></div>
+        <div class="answer" id="answerReveal">The answer was:<strong id="correctAnswer"></strong></div>
+      </div>
+    </section>
+    <div class="footer">Choose a riddle above to begin.</div>
+  </main>
+</div>
+<script>
+  // EDIT THIS LIST to add, remove, or change riddles.
+  // Each riddle has a question and an array of accepted answers.
+  const riddles = [
+    { question: "I have keys but no locks. I have space but no room. You can enter, but you can't go inside.\nWhat am I?", answers: ["keyboard"] },
+    { question: "What has hands but cannot clap?", answers: ["clock", "a clock"] },
+    { question: "I’m tall when I’m young, and I’m short when I’m old.\nWhat am I?", answers: ["candle", "a candle"] },
+    { question: "What can travel around the world while staying in one corner?", answers: ["stamp", "a stamp"] },
+    { question: "The more you take, the more you leave behind.\nWhat am I?", answers: ["footsteps"] },
+    { question: "What has one eye but cannot see?", answers: ["needle", "a needle"] },
+    { question: "I have branches, but no fruit, trunk, or leaves.\nWhat am I?", answers: ["bank", "a bank"] },
+    { question: "What gets wetter the more it dries?", answers: ["towel", "a towel"] }
+  ];
+
+  const homeView = document.getElementById("homeView");
+  const riddleView = document.getElementById("riddleView");
+  const riddleList = document.getElementById("riddleList");
+  const riddleTitle = document.getElementById("riddleTitle");
+  const form = document.getElementById("answerForm");
+  const input = document.getElementById("answer");
+  const message = document.getElementById("message");
+  const reveal = document.getElementById("answerReveal");
+  const correctAnswer = document.getElementById("correctAnswer");
+  let selectedRiddle = null;
+
+  riddles.forEach((riddle, index) => {
+    const button = document.createElement("button");
+    button.className = "riddle-link";
+    button.type = "button";
+    button.innerHTML = "<span>Riddle #" + (index + 1) + "</span><span>→</span>";
+    button.addEventListener("click", () => openRiddle(index));
+    riddleList.appendChild(button);
+  });
+
+  function openRiddle(index) {
+    selectedRiddle = riddles[index];
+    homeView.classList.add("hidden");
+    riddleView.classList.remove("hidden");
+    riddleTitle.textContent = "Riddle #" + (index + 1);
+    document.getElementById("riddle").textContent = selectedRiddle.question;
+    input.value = "";
+    input.disabled = false;
+    form.querySelector("button").disabled = false;
+    message.textContent = "";
+    message.className = "message";
+    reveal.style.display = "none";
+    input.focus();
+  }
+
+  document.getElementById("backButton").addEventListener("click", () => {
+    riddleView.classList.add("hidden");
+    homeView.classList.remove("hidden");
+  });
+
+  function normalize(value) {
+    return value.toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const guess = normalize(input.value);
+    if (!guess) return;
+
+    const correct = selectedRiddle.answers.some(answer => normalize(answer) === guess);
+    if (correct) {
+      message.textContent = "🎉 Correct! Nice work.";
+      message.className = "message success";
+      correctAnswer.textContent = selectedRiddle.answers[0];
+      reveal.style.display = "block";
+      input.disabled = true;
+      form.querySelector("button").disabled = true;
+    } else {
+      message.textContent = "Not quite — try again!";
+      message.className = "message error";
+      input.select();
+    }
+  });
+</script>
+</body>
+</html>
