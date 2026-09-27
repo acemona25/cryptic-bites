@@ -159,12 +159,12 @@
 <body>
 <div id="app">
   <main>
-    <div class="eyebrow">A little brain teaser</div>
+    <div class="eyebrow">Meant to stump</div>
     <section class="card" aria-live="polite">
       <div id="homeView">
-        <h1>Riddles</h1>
+        <h1>Cryptic Bites</h1>
         <!-- EDIT THIS DESCRIPTION to explain how your riddles work. -->
-        <p class="intro">Pick a riddle, solve it, and see whether you got the answer right.</p>
+        <p class="intro">A collection of unique cryptic crossword clues, meant to be challenging and fun. For hints, questions, or anything else, reach me at acemona25@gmail.com.</p>
         <div class="riddle-list" id="riddleList"></div>
       </div>
       <div id="riddleView" class="hidden">
@@ -173,7 +173,7 @@
         <p class="riddle" id="riddle"></p>
         <form class="form" id="answerForm">
           <input id="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Your answer..." aria-label="Your answer">
-          <button type="submit">Submit</button>
+          <button type="submit">Check</button>
         </form>
         <div class="message" id="message"></div>
         <div class="answer" id="answerReveal">The answer was:<strong id="correctAnswer"></strong></div>
@@ -211,7 +211,7 @@
     const button = document.createElement("button");
     button.className = "riddle-link";
     button.type = "button";
-    button.innerHTML = "<span>Riddle #" + (index + 1) + "</span><span>→</span>";
+    button.innerHTML = "<span>Daily Clue #" + (index + 1) + "</span><span>→</span>";
     button.addEventListener("click", () => openRiddle(index));
     riddleList.appendChild(button);
   });
@@ -220,7 +220,7 @@
     selectedRiddle = riddles[index];
     homeView.classList.add("hidden");
     riddleView.classList.remove("hidden");
-    riddleTitle.textContent = "Riddle #" + (index + 1);
+    riddleTitle.textContent = "Daily Clue #" + (index + 1);
     document.getElementById("riddle").textContent = selectedRiddle.question;
     input.value = "";
     input.disabled = false;
@@ -254,7 +254,7 @@
       input.disabled = true;
       form.querySelector("button").disabled = true;
     } else {
-      message.textContent = "Not quite — try again!";
+      message.textContent = "Not quite! Keep at it...";
       message.className = "message error";
       input.select();
     }
