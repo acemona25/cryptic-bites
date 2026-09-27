@@ -296,7 +296,7 @@
     const guess = normalize(input.value);
     if (!guess) return;
 
-    const correct = selectedRiddle.answers.some(answer => normalize(answer) === guess);
+    const correct = selectedRiddle.answer.some(answer => normalize(answer) === guess);
     if (correct) {
       message.textContent = "🎉 Correct! Nice work.";
       message.className = "message success";
